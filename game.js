@@ -105,7 +105,14 @@ class playGame extends Phaser.Scene {
         let letter = row.charAt(i);
 
         // add the keyboard key
-        this.virtualKeyboard[index][i] = new KeyboardKey(this, firstKeyPosition + i * 70 - (letter == '>' ? 35 : 0), 1300 + index * 90, row.charAt(i));
+        if (letter == '>') {
+          var off = 20
+        } else if (letter == '<') {
+          var off = -20
+        } else {
+          var off = 0
+        }
+        this.virtualKeyboard[index][i] = new KeyboardKey(this, firstKeyPosition + i * 70 - off, 1300 + index * 100, row.charAt(i));
       }
     });
     /* this.input.on("pointerdown", this.gemSelect, this);

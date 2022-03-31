@@ -13,7 +13,7 @@ let gameOptions = {
 let puzzles = [
   {
     title: 'Star Wars',
-    words: ['hansolo', 'bobbafett', 'jawa', 'luke', 'blaster', 'star', 'wars', 'falcon', 'milk']
+    words: ['hansolo', 'bobafett', 'jawa', 'luke', 'blaster', 'star', 'wars', 'falcon', 'milk']
   }
 ]
 let onPuzzle = 0;
