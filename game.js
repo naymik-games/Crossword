@@ -66,8 +66,11 @@ class playGame extends Phaser.Scene {
     });
 
     this.board = [];
+    this.revealLetters = false;
+    this.hintCount = 0;
     this.words = puzzles[onPuzzle].words
-
+    this.lettersUsed = this.unique()
+    console.log(this.numberCharacters)
     this.foundWords = [];
     var board = Create(this.words);
     var extraCol = 0
@@ -78,6 +81,9 @@ class playGame extends Phaser.Scene {
     }
 
     this.createBoard(board);
+
+    this.title = this.add.bitmapText(game.config.width / 2, 75, 'topaz', puzzles[onPuzzle].title, 60).setOrigin(.5).setTint(0x000000);
+
 
     this.inputContent = '';
 
@@ -112,9 +118,31 @@ class playGame extends Phaser.Scene {
         } else {
           var off = 0
         }
-        this.virtualKeyboard[index][i] = new KeyboardKey(this, firstKeyPosition + i * 70 - off, 1300 + index * 100, row.charAt(i));
+        this.virtualKeyboard[index][i] = new KeyboardKey(this, firstKeyPosition + i * 70 - off, 1300 + index * 100, row.charAt(i), this.lettersUsed);
       }
     });
+
+    this.revealButton = this.add.image(850, 1000, 'tiles', 26).setInteractive();
+    this.revealButton.on('pointerdown', function () {
+      this.revealLetters = true;
+      this.input.setAlpha(0)
+      this.revealButton.setTint(0xf7ebcb)
+    }, this)
+
+    this.hintText = this.add.bitmapText(game.config.width / 2, 1100, 'topaz', '', 60).setOrigin(.5).setTint(0x000000);
+
+    this.hintButton = this.add.image(850, 1100, 'tiles', 26).setInteractive();
+    this.hintButton.on('pointerdown', function () {
+      this.hintText.setText(puzzles[onPuzzle].hints[this.hintCount])
+      this.hintCount++
+
+    }, this)
+    for (var i = 0; i < this.lettersUsed.length; i++) {
+      this.title = this.add.bitmapText(50 + i * 35, 1575, 'topaz', this.lettersUsed[i], 60).setOrigin(.5).setTint(0x000000);
+    }
+
+
+
     /* this.input.on("pointerdown", this.gemSelect, this);
      this.input.on("pointermove", this.drawPath, this);
      this.input.on("pointerup", this.removeGems, this);
@@ -152,8 +180,16 @@ class playGame extends Phaser.Scene {
       }
 
     } else {
-      console.log(letter)
-      this.inputContent += letter
+      if (this.revealLetters) {
+        this.revealLetter(letter.toLowerCase())
+        this.revealLetters = false
+        this.input.setAlpha(1)
+        this.revealButton.clearTint()
+      } else {
+        console.log(letter)
+        this.inputContent += letter
+      }
+
 
     }
 
@@ -178,6 +214,7 @@ class playGame extends Phaser.Scene {
           tileAnswer.index = ind
           tileAnswer.setInteractive()
           tileAnswer.type = 'answer'
+          tileAnswer.letter = board[i][j].letter
           board[i][j].tile = tileAnswer
           gridT.push(board[i][j].letter)
           //tileAnswer.setFrame(ind)
@@ -195,6 +232,18 @@ class playGame extends Phaser.Scene {
     console.log(this.grid)
 
     //this.patternSearch(this.grid, this.words[1])
+  }
+  revealLetter(letter) {
+    console.log(this.board)
+    for (let row = 0; row < this.board.length; row++) {
+      for (let col = 0; col < this.board[0].length; col++) {
+        if (this.board[row][col] != null) {
+          if (this.board[row][col].letter == letter) {
+            this.board[row][col].tile.setFrame(this.board[row][col].tile.index);
+          }
+        }
+      }
+    }
   }
   revealAnswer(answer) {
     var coo = this.patternSearch(this.grid, answer)
@@ -297,6 +346,18 @@ class playGame extends Phaser.Scene {
       }
     }
     //return false;
+  }
+  unique() {
+    var temp = this.words.join('')
+    this.numberCharacters = temp.length
+    var result = '';
+    for (var i = 0; i < temp.length; i++) {
+      if (result.indexOf(temp[i]) < 0) {
+        result += temp[i];
+      }
+    }
+    var temp2 = shuffle(result).split('');
+    return temp2;
   }
   addScore() {
     this.events.emit('score');

@@ -1,6 +1,6 @@
 class KeyboardKey extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, x, y, letter) {
+    constructor(scene, x, y, letter, letters) {
 
         // different image key according if it's a letter character or '<' or '>'
         super(scene, x, y, '<>'.includes(letter) ? 'bigkey' : 'key');
@@ -10,13 +10,15 @@ class KeyboardKey extends Phaser.GameObjects.Sprite {
 
         // assign bound letter
         this.boundLetter = letter;
-
+        this.lettersUsed = letters;
         // set sprite registration point to top, left
         this.setOrigin(.5);
 
         // add the sprite to the scene
         scene.add.existing(this);
-
+        if (letters.indexOf(letter.toLowerCase()) > -1) {
+            this.setTint(0xf7ebcb)
+        }
         // set the sprite interactive
         this.setInteractive();
 

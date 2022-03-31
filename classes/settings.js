@@ -10,10 +10,13 @@ let gameOptions = {
 
 
 }
+const shuffle = str => [...str].sort(() => Math.random() - .5).join('');
+
 let puzzles = [
   {
     title: 'Star Wars',
-    words: ['hansolo', 'bobafett', 'jawa', 'luke', 'blaster', 'star', 'wars', 'falcon', 'milk']
+    words: ['hansolo', 'bobafett', 'jawa', 'luke', 'blaster', 'star', 'wars', 'falcon', 'milk'],
+    hints: ['Scoundral', 'No disintegrations', 'utini', 'chosen one?', 'gun', 'title I', 'title II', 'hunk of junk', 'blue...']
   }
 ]
 let onPuzzle = 0;

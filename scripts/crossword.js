@@ -35,7 +35,7 @@ function Create(words) {
   // GetWordsFromInput();
   wordArr = words
   //console.log(wordArr)
-  for (var i = 0, isSuccess = false; i < 10 && !isSuccess; i++) {
+  for (var i = 0, isSuccess = false; i < wordArr.length && !isSuccess; i++) {
     CleanVars();
     isSuccess = PopulateBoard();
   }
