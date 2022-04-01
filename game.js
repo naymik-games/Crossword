@@ -2,7 +2,7 @@ let game;
 // keyboard layout, as a string array, each item is a row of keys
 // > represents Enter
 // < represents Backspace
-const keyboardLayout = ['QWERTYUIOP', 'ASDFGHJKL', '>ZXCVBNM<'];
+const keyboardLayout = ['QWERTYUIOP', 'ASDFGHJKL', '<ZXCVBNM>'];
 
 
 window.onload = function () {
@@ -112,13 +112,13 @@ class playGame extends Phaser.Scene {
 
         // add the keyboard key
         if (letter == '>') {
-          var off = 20
-        } else if (letter == '<') {
           var off = -20
+        } else if (letter == '<') {
+          var off = 20
         } else {
           var off = 0
         }
-        this.virtualKeyboard[index][i] = new KeyboardKey(this, firstKeyPosition + i * 70 - off, 1300 + index * 100, row.charAt(i), this.lettersUsed);
+        this.virtualKeyboard[index][i] = new KeyboardKey(this, (firstKeyPosition + 25) + i * 75 - off, 1300 + index * 110, row.charAt(i), this.lettersUsed);
       }
     });
 
@@ -133,13 +133,16 @@ class playGame extends Phaser.Scene {
 
     this.hintButton = this.add.image(850, 1100, 'tiles', 26).setInteractive();
     this.hintButton.on('pointerdown', function () {
+      if(this.hintCount == puzzles[onPuzzle].hints.length){
+        this.hintCount = 0
+      }
       this.hintText.setText(puzzles[onPuzzle].hints[this.hintCount])
       this.hintCount++
 
     }, this)
-    for (var i = 0; i < this.lettersUsed.length; i++) {
+    /*for (var i = 0; i < this.lettersUsed.length; i++) {
       this.title = this.add.bitmapText(50 + i * 35, 1575, 'topaz', this.lettersUsed[i], 60).setOrigin(.5).setTint(0x000000);
-    }
+    }*/
 
 
 
@@ -168,6 +171,9 @@ class playGame extends Phaser.Scene {
           this.foundWords.push(result)
           this.inputContent = '';
           this.inputText.setText(this.inputContent)
+          if(this.foundWords.length == this.words.length){
+            console.log('win')
+          }
         } else {
           this.inputContent = '';
           this.inputText.setText(this.inputContent)
