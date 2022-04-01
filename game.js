@@ -68,19 +68,34 @@ class playGame extends Phaser.Scene {
     this.board = [];
     this.revealLetters = false;
     this.hintCount = 0;
-    this.words = puzzles[onPuzzle].words
-    this.lettersUsed = this.unique()
-    console.log(this.numberCharacters)
+    //this.words = puzzles[onPuzzle].words
+
+    //this.lettersUsed = ['a']
+    // console.log(this.numberCharacters)
     this.foundWords = [];
-    var board = Create(this.words);
+    //var board = Create(this.words);
+    this.layout = generateLayout(puzzles[onPuzzle]);
+    this.words = []
+    for (var i = 0; i < puzzles[onPuzzle].length; i++) {
+      this.words.push(puzzles[onPuzzle][i].answer)
+    }
+    this.lettersUsed = this.unique()
+    var temp = this.layout.table; // table as two-dimensional array
+    var table = this.addPadding(temp, '-')
+    console.log(table)
+    //console.log(this.words)
+    this.puzzleData = this.layout.result
+    console.log(this.puzzleData)
+
+
     var extraCol = 0
-    if (board.length > board[0].length) {
-      this.blockSize = game.config.width / (board.length + extraCol)
+    if (table.length > table[0].length) {
+      this.blockSize = game.config.width / (table.length + extraCol)
     } else {
-      this.blockSize = game.config.width / (board[0].length + extraCol)
+      this.blockSize = game.config.width / (table[0].length + extraCol)
     }
 
-    this.createBoard(board);
+    this.createBoard(table);
 
     this.title = this.add.bitmapText(game.config.width / 2, 75, 'topaz', puzzles[onPuzzle].title, 60).setOrigin(.5).setTint(0x000000);
 
@@ -133,10 +148,13 @@ class playGame extends Phaser.Scene {
 
     this.hintButton = this.add.image(850, 1100, 'tiles', 26).setInteractive();
     this.hintButton.on('pointerdown', function () {
-      if(this.hintCount == puzzles[onPuzzle].hints.length){
+      if (this.hintCount == this.puzzleData.length) {
         this.hintCount = 0
       }
-      this.hintText.setText(puzzles[onPuzzle].hints[this.hintCount])
+      this.hintText.setText(this.puzzleData[this.hintCount].clue + this.puzzleData[this.hintCount].orientation)
+      //console.log(this.puzzleData[this.hintCount].starty)
+      //console.log(this.board[this.puzzleData[this.hintCount].starty][this.puzzleData[this.hintCount].startx])
+      this.board[this.puzzleData[this.hintCount].starty][this.puzzleData[this.hintCount].startx].tile.setTint(0xf7ebcb)
       this.hintCount++
 
     }, this)
@@ -152,6 +170,28 @@ class playGame extends Phaser.Scene {
     */
     //this.check = this.add.image(725, 1000, 'check').setScale(.7);
   }
+  addPadding(array, fill) {
+    let filledArray = new Array(array[0].length + 2).fill('-');
+
+    for (var i = 0; i < array.length; i++) {
+      array[i].push(fill)
+      array[i].unshift(fill)
+    }
+    array.unshift(filledArray);
+    array.push(filledArray)
+    return array
+  }
+  addPadding_(array, fill) {
+    const edge = Array(array.length + 2).fill(fill);
+    array = array.map(a => {
+      a.push(fill);
+      a.unshift(fill);
+      return a;
+    });
+    array.push(edge);
+    array.unshift(edge);
+    return array;
+  };
   update() {
 
   }
@@ -171,7 +211,7 @@ class playGame extends Phaser.Scene {
           this.foundWords.push(result)
           this.inputContent = '';
           this.inputText.setText(this.inputContent)
-          if(this.foundWords.length == this.words.length){
+          if (this.foundWords.length == this.words.length) {
             console.log('win')
           }
         } else {
@@ -201,42 +241,44 @@ class playGame extends Phaser.Scene {
 
     this.inputText.setText(this.inputContent)
   }
-  createBoard(board) {
+  createBoard(table) {
     //console.log(board)
-    this.grid = []
-    for (var i = 0; i < board.length; i++) {
-      var gridT = []
-      for (var j = 0; j < board[0].length; j++) {
-        if (board[i][j] != null) {
+    this.board = []
+    for (var i = 0; i < table.length; i++) {
+      var boardT = []
+      for (var j = 0; j < table[0].length; j++) {
+        if (table[i][j] != '-') {
+          var tile = {}
           var xpos = 25 + j * this.blockSize
           var ypos = 150 + i * this.blockSize
           var tileAnswer = this.answerTiles.get();
           tileAnswer.displayWidth = this.blockSize
           tileAnswer.displayHeight = this.blockSize
           tileAnswer.setPosition(xpos, ypos)
-          tileAnswer.word = board[i][j].word
-          tileAnswer.direction = board[i][j].dir
-          var ind = this.tileLetters.indexOf(board[i][j].letter)
+          // tileAnswer.word = board[i][j].word
+          //tileAnswer.direction = board[i][j].dir
+          var ind = this.tileLetters.indexOf(table[i][j])
           tileAnswer.index = ind
           tileAnswer.setInteractive()
           tileAnswer.type = 'answer'
-          tileAnswer.letter = board[i][j].letter
-          board[i][j].tile = tileAnswer
-          gridT.push(board[i][j].letter)
+          tileAnswer.letter = table[i][j]
+          tile.tile = tileAnswer
+          tile.letter = table[i][j]
+          boardT.push(tile)
           //tileAnswer.setFrame(ind)
           //console.log(tileAnswer.word)
 
         } else {
-          gridT.push('-')
+          boardT.push(null)
         }
 
 
       }
-      this.grid.push(gridT)
+      this.board.push(boardT)
     }
-    this.board = board
-    console.log(this.grid)
 
+    //console.log(this.board)
+    this.grid = table
     //this.patternSearch(this.grid, this.words[1])
   }
   revealLetter(letter) {

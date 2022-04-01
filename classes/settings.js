@@ -11,21 +11,28 @@ let gameOptions = {
 
 }
 const shuffle = str => [...str].sort(() => Math.random() - .5).join('');
-
+//{"clue":"that which is established","answer":"standard"}
 let puzzles = [
-  {
-    title: 'Forest',
-    words: ['leaf', 'tree', 'bird', 'cone'],
-    hints: ['food factory', 'tall', 'nest', 'seed pod']
-  },
-  {
-    title: 'Star Wars',
-    words: ['hansolo', 'bobafett', 'jawa', 'luke', 'blaster', 'star', 'wars', 'falcon', 'milk'],
-    hints: ['Scoundral', 'No disintegrations', 'utini', 'chosen one?', 'gun', 'title I', 'title II', 'hunk of junk', 'blue...']
-  },
-  
+  [
+    { clue: 'a scoundral', answer: 'hansolo' },
+    { clue: 'arrrgggghhh', answer: 'wookie' },
+    { clue: 'ball of death', answer: 'deathstar' },
+    { clue: 'we would call it a gun', answer: 'blaster' },
+    { clue: 'hocus pocus', answer: 'force' },
+    { clue: 'hunk of junk', answer: 'falcon' },
+    { clue: 'war over these', answer: 'stars' }
+  ],
+  [
+    { clue: 'food factory', answer: 'leaf' },
+    { clue: '_ gully', answer: 'fern' },
+    { clue: 'cone tree', answer: 'pinetree' },
+    { clue: 'nest', answer: 'bird' },
+    { clue: 'canopy', answer: 'canopy' },
+    { clue: 'creepy crawlers', answer: 'insects' },
+    { clue: 'path', answer: 'trail' }
+  ],
 ]
-let onPuzzle = 0;
+let onPuzzle = 1;
 let gameSettings;
 var defaultValues = {
   mostDotsMoves: 0,
