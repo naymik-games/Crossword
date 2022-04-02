@@ -71,7 +71,7 @@ class playGame extends Phaser.Scene {
     //this.words = puzzles[onPuzzle].words
 
     //this.lettersUsed = ['a']
-    // console.log(this.numberCharacters)
+
     this.foundWords = [];
     //var board = Create(this.words);
     this.layout = generateLayout(puzzles[onPuzzle]);
@@ -82,7 +82,7 @@ class playGame extends Phaser.Scene {
     this.lettersUsed = this.unique()
     var temp = this.layout.table; // table as two-dimensional array
     var table = this.addPadding(temp, '-')
-    console.log(table)
+
     //console.log(this.words)
     this.puzzleData = this.layout.result
     console.log(this.puzzleData)
